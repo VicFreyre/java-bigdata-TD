@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alunos - Sistema de Matrículas</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        body { padding-top: 70px; background-color: #f8f9fa; }
+        .navbar { box-shadow: 0 2px 4px rgba(0,0,0,.1); }
+        .card { border: none; box-shadow: 0 2px 4px rgba(0,0,0,.1); }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/"><i class="bi bi-mortarboard-fill"></i> Sistema de Matrículas</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="/"><i class="bi bi-house-door"></i> Início</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="/alunos"><i class="bi bi-people"></i> Alunos</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/cursos"><i class="bi bi-book"></i> Cursos</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/matriculas"><i class="bi bi-clipboard-check"></i> Matrículas</a></li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown"><i class="bi bi-graph-up"></i> Relatórios</a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="/relatorios/alunos-por-curso">Alunos por Curso</a></li>
+                            <li><a class="dropdown-item" href="/relatorios/cursos-mais-procurados">Cursos Mais Procurados</a></li>
+                            <li><a class="dropdown-item" href="/relatorios/matriculas-por-periodo">Matrículas por Período</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid mt-4">
+        <!-- Mensagens -->
+        <div th:if="${sucesso}" class="alert alert-success alert-dismissible fade show">
+            <i class="bi bi-check-circle"></i> <span th:text="${sucesso}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        <div th:if="${erro}" class="alert alert-danger alert-dismissible fade show">
+            <i class="bi bi-exclamation-triangle"></i> <span th:text="${erro}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+
+        <!-- Card Principal -->
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h4 class="mb-0"><i class="bi bi-people"></i> Lista de Alunos</h4>
+            </div>
+            <div class="card-body">
+                <!-- Barra de Pesquisa e Botão -->
+                <div class="row mb-3">
+                    <div class="col-md-8">
+                        <form method="get" action="/alunos">
+                            <div class="input-group">
+                                <input type="text" class="form-control" name="nome" th:value="${nome}" placeholder="Pesquisar por nome...">
+                                <button class="btn btn-primary" type="submit">
+                                    <i class="bi bi-search"></i> Pesquisar
+                                </button>
+                                <a th:if="${nome}" href="/alunos" class="btn btn-secondary">
+                                    <i class="bi bi-x-circle"></i> Limpar
+                                </a>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="col-md-4 text-end">
+                        <a href="/alunos/novo" class="btn btn-success">
+                            <i class="bi bi-person-plus"></i> Cadastrar Aluno
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Tabela -->
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>Nome</th>
+                                <th>Email</th>
+                                <th>Idade</th>
+                                <th>Telefone</th>
+                                <th class="text-center">Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:if="${alunos.empty}">
+                                <td colspan="5" class="text-center text-muted">Nenhum aluno encontrado</td>
+                            </tr>
+                            <tr th:each="aluno : ${alunos.content}">
+                                <td th:text="${aluno.nome}"></td>
+                                <td th:text="${aluno.email}"></td>
+                                <td th:text="${aluno.idade}"></td>
+                                <td th:text="${aluno.telefone != null ? aluno.telefone : 'Não informado'}"></td>
+                                <td class="text-center">
+                                    <a th:href="@{/alunos/detalhes/{id}(id=${aluno.id})}" class="btn btn-sm btn-info" title="Detalhes">
+                                        <i class="bi bi-eye"></i>
+                                    </a>
+                                    <a th:href="@{/alunos/editar/{id}(id=${aluno.id})}" class="btn btn-sm btn-warning" title="Editar">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+                                    <form th:action="@{/alunos/excluir/{id}(id=${aluno.id})}" method="post" style="display: inline;" 
+                                          onsubmit="return confirm('Tem certeza que deseja excluir este aluno?');">
+                                        <button type="submit" class="btn btn-sm btn-danger" title="Excluir">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Paginação -->
+                <div th:if="${alunos.totalPages > 1}" class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <span>Mostrando <span th:text="${alunos.number * alunos.size + 1}"></span> a 
+                              <span th:text="${alunos.number * alunos.size + alunos.numberOfElements}"></span> de 
+                              <span th:text="${alunos.totalElements}"></span> alunos</span>
+                    </div>
+                    <nav>
+                        <ul class="pagination mb-0">
+                            <li class="page-item" th:classappend="${alunos.first} ? 'disabled'">
+                                <a class="page-link" th:href="@{/alunos(nome=${nome}, page=${alunos.number - 1})}">Anterior</a>
+                            </li>
+                            <li class="page-item" th:each="i : ${#numbers.sequence(0, alunos.totalPages - 1)}" 
+                                th:classappend="${i == alunos.number} ? 'active'">
+                                <a class="page-link" th:href="@{/alunos(nome=${nome}, page=${i})}" th:text="${i + 1}"></a>
+                            </li>
+                            <li class="page-item" th:classappend="${alunos.last} ? 'disabled'">
+                                <a class="page-link" th:href="@{/alunos(nome=${nome}, page=${alunos.number + 1})}">Próxima</a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
+

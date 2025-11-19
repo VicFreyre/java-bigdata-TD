@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalhes do Aluno</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        body { padding-top: 70px; background-color: #f8f9fa; }
+        .navbar { box-shadow: 0 2px 4px rgba(0,0,0,.1); }
+        .card { border: none; box-shadow: 0 2px 4px rgba(0,0,0,.1); }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/"><i class="bi bi-mortarboard-fill"></i> Sistema de Matrículas</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="/"><i class="bi bi-house-door"></i> Início</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="/alunos"><i class="bi bi-people"></i> Alunos</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/cursos"><i class="bi bi-book"></i> Cursos</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/matriculas"><i class="bi bi-clipboard-check"></i> Matrículas</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <!-- Dados do Aluno -->
+        <div class="card mb-4">
+            <div class="card-header bg-primary text-white">
+                <h4 class="mb-0"><i class="bi bi-person"></i> Dados do Aluno</h4>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <p><strong>Nome:</strong> <span th:text="${aluno.nome}"></span></p>
+                        <p><strong>Idade:</strong> <span th:text="${aluno.idade}"></span> anos</p>
+                        <p><strong>Email:</strong> <span th:text="${aluno.email}"></span></p>
+                    </div>
+                    <div class="col-md-6">
+                        <p><strong>Telefone:</strong> <span th:text="${aluno.telefone != null ? aluno.telefone : 'Não informado'}"></span></p>
+                        <p><strong>Endereço:</strong> <span th:text="${aluno.endereco != null ? aluno.endereco : 'Não informado'}"></span></p>
+                        <p><strong>Data de Cadastro:</strong> 
+                           <span th:text="${#temporals.format(aluno.dataCadastro, 'dd/MM/yyyy HH:mm')}"></span></p>
+                    </div>
+                </div>
+                <div class="mt-3">
+                    <a th:href="@{/alunos/editar/{id}(id=${aluno.id})}" class="btn btn-warning">
+                        <i class="bi bi-pencil"></i> Editar
+                    </a>
+                    <a href="/alunos" class="btn btn-secondary">
+                        <i class="bi bi-arrow-left"></i> Voltar
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Histórico de Matrículas -->
+        <div class="card">
+            <div class="card-header bg-info text-white">
+                <h4 class="mb-0"><i class="bi bi-clipboard-check"></i> Histórico de Matrículas</h4>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>Curso</th>
+                                <th>Data da Matrícula</th>
+                                <th>Status</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:if="${historico == null || historico.empty}">
+                                <td colspan="4" class="text-center text-muted">Nenhuma matrícula encontrada</td>
+                            </tr>
+                            <tr th:each="matricula : ${historico}">
+                                <td th:text="${matricula.nomeCurso}"></td>
+                                <td th:text="${#temporals.format(matricula.dataMatricula, 'dd/MM/yyyy HH:mm')}"></td>
+                                <td>
+                                    <span th:if="${matricula.status == 'ATIVA'}" class="badge bg-success">ATIVA</span>
+                                    <span th:if="${matricula.status == 'CANCELADA'}" class="badge bg-danger">CANCELADA</span>
+                                </td>
+                                <td>
+                                    <a th:href="@{/matriculas/detalhes/{id}(id=${matricula.id})}" class="btn btn-sm btn-info">
+                                        <i class="bi bi-eye"></i> Detalhes
+                                    </a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
+
