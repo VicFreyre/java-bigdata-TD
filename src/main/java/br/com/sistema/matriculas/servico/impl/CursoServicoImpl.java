@@ -12,6 +12,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -47,6 +48,9 @@ public class CursoServicoImpl implements CursoServico {
     @Override
     public CursoDTO salvar(CursoDTO cursoDTO) {
         Curso curso = modelMapper.map(cursoDTO, Curso.class);
+        if (curso.getDataCadastro() == null) {
+            curso.setDataCadastro(LocalDateTime.now());
+        }
         curso = cursoRepositorio.save(curso);
         return modelMapper.map(curso, CursoDTO.class);
     }
@@ -60,6 +64,7 @@ public class CursoServicoImpl implements CursoServico {
         curso.setDescricao(cursoDTO.getDescricao());
         curso.setCargaHoraria(cursoDTO.getCargaHoraria());
         curso.setCategoria(cursoDTO.getCategoria());
+        curso.setDataUltimaModificacao(LocalDateTime.now());
         
         curso = cursoRepositorio.save(curso);
         return modelMapper.map(curso, CursoDTO.class);

@@ -12,6 +12,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -50,6 +51,9 @@ public class AlunoServicoImpl implements AlunoServico {
             throw new IllegalArgumentException("Já existe um aluno cadastrado com este email");
         }
         Aluno aluno = modelMapper.map(alunoDTO, Aluno.class);
+        if (aluno.getDataCadastro() == null) {
+            aluno.setDataCadastro(LocalDateTime.now());
+        }
         aluno = alunoRepositorio.save(aluno);
         return modelMapper.map(aluno, AlunoDTO.class);
     }
@@ -70,6 +74,7 @@ public class AlunoServicoImpl implements AlunoServico {
         aluno.setEndereco(alunoDTO.getEndereco());
         aluno.setEmail(alunoDTO.getEmail());
         aluno.setTelefone(alunoDTO.getTelefone());
+        aluno.setDataUltimaModificacao(LocalDateTime.now());
         
         aluno = alunoRepositorio.save(aluno);
         return modelMapper.map(aluno, AlunoDTO.class);

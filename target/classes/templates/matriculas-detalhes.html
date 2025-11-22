@@ -3,20 +3,100 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Detalhes da Matrícula</title>
+    <title>Detalhes da Matrícula - ClassFlow</title>
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
     <style>
-        body { padding-top: 70px; background-color: #f8f9fa; }
-        .navbar { box-shadow: 0 2px 4px rgba(0,0,0,.1); }
-        .card { border: none; box-shadow: 0 2px 4px rgba(0,0,0,.1); }
+        :root {
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --success-color: #28a745; /* verde tradicional para ATIVA */
+            --danger-color: #dc3545;  /* vermelho para cancelar */
+            --info-gradient: linear-gradient(135deg, #1e9e49 0%, #24be5f 100%);
+        }
+
+        * { font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
+
+        body {
+            padding-top: 76px;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+        }
+
+        .navbar {
+            background: var(--primary-gradient) !important;
+            box-shadow: 0 4px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .card {
+            border: none;
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+            margin-bottom: 24px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
+        }
+
+        .card-header {
+            border-top-left-radius: 16px !important;
+            border-top-right-radius: 16px !important;
+            display: flex;
+            justify-content: flex-start !important;
+            align-items: center;
+            height: 60px;
+            padding-left: 20px !important;
+            text-align: left !important;
+        }
+
+        .header-primary { background: var(--primary-gradient); color: #fff; }
+        .header-info { background: var(--info-gradient); color: #fff; }
+
+        .btn-primary, .btn-secondary {
+            border-radius: 10px;
+        }
+
+        .btn-cancel {
+            background: var(--danger-color);
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+        }
+
+        .btn-cancel:hover {
+            background: #c82333;
+            color: #fff;
+        }
+
+        .table thead {
+            background: var(--primary-gradient);
+            color: #fff;
+        }
+
+        .badge.bg-success {
+            background: var(--success-color);
+        }
     </style>
 </head>
 <body>
+
     <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
         <div class="container-fluid">
-            <a class="navbar-brand" href="/"><i class="bi bi-mortarboard-fill"></i> Sistema de Matrículas</a>
+            <a class="navbar-brand d-flex align-items-center" href="/">
+                <img src="https://i.ibb.co/whg0LrLg/image-removebg-preview.png" 
+                     alt="logo" style="height:1.4em; width:auto; margin-right:8px;">
+                ClassFlow
+            </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -26,15 +106,25 @@
                     <li class="nav-item"><a class="nav-link" href="/alunos"><i class="bi bi-people"></i> Alunos</a></li>
                     <li class="nav-item"><a class="nav-link" href="/cursos"><i class="bi bi-book"></i> Cursos</a></li>
                     <li class="nav-item"><a class="nav-link active" href="/matriculas"><i class="bi bi-clipboard-check"></i> Matrículas</a></li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
+                            <i class="bi bi-graph-up"></i> Relatórios
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="/relatorios/alunos-por-curso"><i class="bi bi-people-fill"></i> Alunos por Curso</a></li>
+                            <li><a class="dropdown-item" href="/relatorios/cursos-mais-procurados"><i class="bi bi-book-half"></i> Cursos Mais Procurados</a></li>
+                        </ul>
+                    </li>
                 </ul>
             </div>
         </div>
     </nav>
 
     <div class="container mt-4">
+
         <!-- Dados da Matrícula -->
-        <div class="card mb-4">
-            <div class="card-header bg-info text-white">
+        <div class="card">
+            <div class="card-header header-info">
                 <h4 class="mb-0"><i class="bi bi-clipboard-check"></i> Detalhes da Matrícula</h4>
             </div>
             <div class="card-body">
@@ -49,6 +139,8 @@
                         <p><strong>Status:</strong> 
                             <span th:if="${matricula.status == 'ATIVA'}" class="badge bg-success">ATIVA</span>
                             <span th:if="${matricula.status == 'CANCELADA'}" class="badge bg-danger">CANCELADA</span>
+                            <span th:if="${matricula.status == 'TRANCADA'}" class="badge bg-warning">TRANCADA</span>
+                            <span th:if="${matricula.status == 'TRANSFERIDA'}" class="badge bg-info">TRANSFERIDA</span>
                         </p>
                         <p th:if="${matricula.dataCancelamento != null}">
                             <strong>Data de Cancelamento:</strong> 
@@ -61,7 +153,7 @@
                           th:action="@{/matriculas/cancelar/{id}(id=${matricula.id})}" 
                           method="post" style="display: inline;" 
                           onsubmit="return confirm('Tem certeza que deseja cancelar esta matrícula?');">
-                        <button type="submit" class="btn btn-warning">
+                        <button type="submit" class="btn btn-cancel">
                             <i class="bi bi-x-circle"></i> Cancelar Matrícula
                         </button>
                     </form>
@@ -74,13 +166,13 @@
 
         <!-- Histórico do Aluno -->
         <div class="card">
-            <div class="card-header bg-primary text-white">
+            <div class="card-header header-primary">
                 <h4 class="mb-0"><i class="bi bi-clock-history"></i> Histórico de Matrículas do Aluno</h4>
             </div>
             <div class="card-body">
                 <div class="table-responsive">
-                    <table class="table table-striped">
-                        <thead class="table-dark">
+                    <table class="table table-striped align-middle">
+                        <thead>
                             <tr>
                                 <th>Curso</th>
                                 <th>Data da Matrícula</th>
@@ -97,6 +189,8 @@
                                 <td>
                                     <span th:if="${mat.status == 'ATIVA'}" class="badge bg-success">ATIVA</span>
                                     <span th:if="${mat.status == 'CANCELADA'}" class="badge bg-danger">CANCELADA</span>
+                                    <span th:if="${mat.status == 'TRANCADA'}" class="badge bg-warning">TRANCADA</span>
+                                    <span th:if="${mat.status == 'TRANSFERIDA'}" class="badge bg-info">TRANSFERIDA</span>
                                 </td>
                             </tr>
                         </tbody>
@@ -104,9 +198,9 @@
                 </div>
             </div>
         </div>
+
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
-

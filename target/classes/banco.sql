@@ -22,7 +22,8 @@ CREATE TABLE alunos (
     endereco VARCHAR(500),
     email VARCHAR(255) NOT NULL UNIQUE,
     telefone VARCHAR(20),
-    data_cadastro TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    data_cadastro TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    data_ultima_modificacao TIMESTAMP
 );
 
 -- Índice para busca por nome
@@ -40,7 +41,8 @@ CREATE TABLE cursos (
     descricao TEXT,
     carga_horaria INTEGER NOT NULL CHECK (carga_horaria > 0),
     categoria VARCHAR(100) NOT NULL,
-    data_cadastro TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    data_cadastro TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    data_ultima_modificacao TIMESTAMP
 );
 
 -- Índice para busca por nome
@@ -57,7 +59,7 @@ CREATE TABLE matriculas (
     id_aluno INTEGER NOT NULL,
     id_curso INTEGER NOT NULL,
     data_matricula TIMESTAMP,
-    status VARCHAR(20) NOT NULL DEFAULT 'ATIVA' CHECK (status IN ('ATIVA', 'CANCELADA')),
+    status VARCHAR(20) NOT NULL DEFAULT 'ATIVA' CHECK (status IN ('ATIVA', 'CANCELADA', 'TRANCADA', 'TRANSFERIDA')),
     data_cancelamento TIMESTAMP,
     FOREIGN KEY (id_aluno) REFERENCES alunos(id) ON DELETE CASCADE,
     FOREIGN KEY (id_curso) REFERENCES cursos(id) ON DELETE CASCADE,

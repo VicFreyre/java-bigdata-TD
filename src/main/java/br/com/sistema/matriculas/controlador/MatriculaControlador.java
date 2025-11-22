@@ -94,6 +94,53 @@ public class MatriculaControlador {
                 });
     }
 
+    @GetMapping("/editar/{id}")
+    public String editar(@PathVariable Long id, Model model, RedirectAttributes redirectAttributes) {
+        return matriculaServico.buscarPorId(id)
+                .map(matriculaDTO -> {
+                    if (!"ATIVA".equals(matriculaDTO.getStatus())) {
+                        redirectAttributes.addFlashAttribute("erro", "Apenas matrículas ativas podem ser editadas");
+                        return "redirect:/matriculas";
+                    }
+                    List<CursoDTO> cursos = cursoServico.listarTodos();
+                    model.addAttribute("matricula", matriculaDTO);
+                    model.addAttribute("cursos", cursos);
+                    return "matriculas-editar";
+                })
+                .orElseGet(() -> {
+                    redirectAttributes.addFlashAttribute("erro", "Matrícula não encontrada");
+                    return "redirect:/matriculas";
+                });
+    }
+
+    @PostMapping("/atualizar")
+    public String atualizar(@RequestParam Long id,
+                           @RequestParam String acao,
+                           @RequestParam(required = false) Long novoCursoId,
+                           RedirectAttributes redirectAttributes) {
+        try {
+            if ("cancelar".equals(acao)) {
+                matriculaServico.cancelar(id);
+                redirectAttributes.addFlashAttribute("sucesso", "Matrícula cancelada com sucesso!");
+            } else if ("trancar".equals(acao)) {
+                matriculaServico.trancar(id);
+                redirectAttributes.addFlashAttribute("sucesso", "Matrícula trancada com sucesso!");
+            } else if ("transferir".equals(acao)) {
+                if (novoCursoId == null) {
+                    redirectAttributes.addFlashAttribute("erro", "Selecione um curso para transferência");
+                    return "redirect:/matriculas/editar/" + id;
+                }
+                matriculaServico.transferir(id, novoCursoId);
+                redirectAttributes.addFlashAttribute("sucesso", "Matrícula transferida com sucesso!");
+            }
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("erro", e.getMessage());
+            return "redirect:/matriculas/editar/" + id;
+        }
+
+        return "redirect:/matriculas";
+    }
+
     @PostMapping("/cancelar/{id}")
     public String cancelar(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         try {

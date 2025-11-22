@@ -18,6 +18,10 @@ public interface MatriculaServico {
 
     void cancelar(Long id);
 
+    void trancar(Long id);
+
+    void transferir(Long id, Long novoCursoId);
+
     List<MatriculaDTO> buscarPorAluno(Long idAluno);
 
     List<MatriculaDTO> buscarPorCurso(Long idCurso);

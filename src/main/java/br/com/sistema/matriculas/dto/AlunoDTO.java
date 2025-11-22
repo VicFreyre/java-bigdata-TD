@@ -27,6 +27,8 @@ public class AlunoDTO {
 
     private LocalDateTime dataCadastro;
 
+    private LocalDateTime dataUltimaModificacao;
+
     // Construtores
     public AlunoDTO() {
     }
@@ -95,6 +97,14 @@ public class AlunoDTO {
 
     public void setDataCadastro(LocalDateTime dataCadastro) {
         this.dataCadastro = dataCadastro;
+    }
+
+    public LocalDateTime getDataUltimaModificacao() {
+        return dataUltimaModificacao;
+    }
+
+    public void setDataUltimaModificacao(LocalDateTime dataUltimaModificacao) {
+        this.dataUltimaModificacao = dataUltimaModificacao;
     }
 }
 

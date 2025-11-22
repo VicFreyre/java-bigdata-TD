@@ -81,6 +81,43 @@ public class MatriculaServicoImpl implements MatriculaServico {
     }
 
     @Override
+    public void trancar(Long id) {
+        Matricula matricula = matriculaRepositorio.findById(id)
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Matrícula não encontrada com ID: " + id));
+        
+        if (!"ATIVA".equals(matricula.getStatus())) {
+            throw new IllegalArgumentException("Apenas matrículas ativas podem ser trancadas");
+        }
+        
+        matricula.trancar();
+        matriculaRepositorio.save(matricula);
+    }
+
+    @Override
+    public void transferir(Long id, Long novoCursoId) {
+        Matricula matricula = matriculaRepositorio.findById(id)
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Matrícula não encontrada com ID: " + id));
+        
+        if (!"ATIVA".equals(matricula.getStatus())) {
+            throw new IllegalArgumentException("Apenas matrículas ativas podem ser transferidas");
+        }
+        
+        Curso novoCurso = cursoRepositorio.findById(novoCursoId)
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Curso não encontrado com ID: " + novoCursoId));
+        
+        // Verificar se já existe matrícula ativa no novo curso
+        Optional<Matricula> matriculaExistente = matriculaRepositorio.buscarMatriculaAtiva(
+                matricula.getAluno().getId(), novoCursoId);
+        
+        if (matriculaExistente.isPresent() && !matriculaExistente.get().getId().equals(id)) {
+            throw new IllegalArgumentException("Aluno já possui matrícula ativa neste curso");
+        }
+        
+        matricula.transferir(novoCurso);
+        matriculaRepositorio.save(matricula);
+    }
+
+    @Override
     public List<MatriculaDTO> buscarPorAluno(Long idAluno) {
         return matriculaRepositorio.buscarPorAluno(idAluno).stream()
                 .map(this::converterParaDTO)

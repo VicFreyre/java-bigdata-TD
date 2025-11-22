@@ -16,7 +16,7 @@
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
         <div class="container-fluid">
-            <a class="navbar-brand" href="/"><i class="bi bi-mortarboard-fill"></i> Sistema de Matrículas</a>
+            <a class="navbar-brand" href="/"><i class="bi bi-mortarboard-fill"></i> ClassFlow</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -49,6 +49,8 @@
                         <p><strong>Status:</strong> 
                             <span th:if="${matricula.status == 'ATIVA'}" class="badge bg-success">ATIVA</span>
                             <span th:if="${matricula.status == 'CANCELADA'}" class="badge bg-danger">CANCELADA</span>
+                            <span th:if="${matricula.status == 'TRANCADA'}" class="badge bg-warning">TRANCADA</span>
+                            <span th:if="${matricula.status == 'TRANSFERIDA'}" class="badge bg-info">TRANSFERIDA</span>
                         </p>
                         <p th:if="${matricula.dataCancelamento != null}">
                             <strong>Data de Cancelamento:</strong> 
@@ -97,6 +99,8 @@
                                 <td>
                                     <span th:if="${mat.status == 'ATIVA'}" class="badge bg-success">ATIVA</span>
                                     <span th:if="${mat.status == 'CANCELADA'}" class="badge bg-danger">CANCELADA</span>
+                                    <span th:if="${mat.status == 'TRANCADA'}" class="badge bg-warning">TRANCADA</span>
+                                    <span th:if="${mat.status == 'TRANSFERIDA'}" class="badge bg-info">TRANSFERIDA</span>
                                 </td>
                             </tr>
                         </tbody>

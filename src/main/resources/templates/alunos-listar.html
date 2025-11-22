@@ -1,25 +1,125 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Alunos - Sistema de Matrículas</title>
+    <title>Alunos - ClassFlow</title>
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
     <style>
-        body { padding-top: 70px; background-color: #f8f9fa; }
-        .navbar { box-shadow: 0 2px 4px rgba(0,0,0,.1); }
-        .card { border: none; box-shadow: 0 2px 4px rgba(0,0,0,.1); }
+        :root {
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --success-gradient: linear-gradient(135deg, #1e9e49 0%, #24be5f 100%);
+            --info-gradient: linear-gradient(135deg, #1e9e49 0%, #24be5f 100%);
+        }
+
+        * {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        }
+
+        body {
+            padding-top: 76px;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+        }
+
+        /* NAVBAR */
+        .navbar {
+            background: var(--primary-gradient) !important;
+            box-shadow: 0 4px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        /* CARDS */
+        .card {
+            border: none;
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
+        }
+
+        /* CARD HEADER */
+        .card-header {
+            border-top-left-radius: 16px !important;
+            border-top-right-radius: 16px !important;
+            background: var(--primary-gradient);
+            color: white;
+        }
+
+        /* TABELA */
+        .table thead th {
+            background: #27292b !important;
+            color: #ffffff;
+            font-weight: 600;
+        }
+
+        /* BOTÕES */
+        .btn-primary {
+            background: var(--primary-gradient);
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-success {
+            background: var(--success-gradient) !important;
+            border: none;
+            border-radius: 10px;
+        }
+
+        .btn-info {
+            background: #0c44bb;
+            border: none;
+            border-radius: 10px;
+        }
+
+        .btn-info i {
+            color: #ffffff; /* Ícone branco */
+        }
+
+        .btn-info:hover i {
+            color: #ffffff; /* Mantém o ícone branco ao passar o mouse */
+        }
+
+        .btn-warning,
+        .btn-danger,
+        .btn-secondary {
+            border-radius: 10px;
+        }
+
+        .btn-primary:hover {
+            opacity: 0.9;
+        }
     </style>
 </head>
+
 <body>
+
     <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
         <div class="container-fluid">
-            <a class="navbar-brand" href="/"><i class="bi bi-mortarboard-fill"></i> Sistema de Matrículas</a>
+            <a class="navbar-brand d-flex align-items-center" href="/">
+                <img src="https://i.ibb.co/whg0LrLg/image-removebg-preview.png" 
+                     alt="logo" style="height:1.4em; width:auto; margin-right:8px;">
+                ClassFlow
+            </a>
+
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
+
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item"><a class="nav-link" href="/"><i class="bi bi-house-door"></i> Início</a></li>
@@ -27,11 +127,12 @@
                     <li class="nav-item"><a class="nav-link" href="/cursos"><i class="bi bi-book"></i> Cursos</a></li>
                     <li class="nav-item"><a class="nav-link" href="/matriculas"><i class="bi bi-clipboard-check"></i> Matrículas</a></li>
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown"><i class="bi bi-graph-up"></i> Relatórios</a>
+                        <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
+                            <i class="bi bi-graph-up"></i> Relatórios
+                        </a>
                         <ul class="dropdown-menu">
                             <li><a class="dropdown-item" href="/relatorios/alunos-por-curso">Alunos por Curso</a></li>
                             <li><a class="dropdown-item" href="/relatorios/cursos-mais-procurados">Cursos Mais Procurados</a></li>
-                            <li><a class="dropdown-item" href="/relatorios/matriculas-por-periodo">Matrículas por Período</a></li>
                         </ul>
                     </li>
                 </ul>
@@ -40,11 +141,13 @@
     </nav>
 
     <div class="container-fluid mt-4">
-        <!-- Mensagens -->
+
+        <!-- Alertas -->
         <div th:if="${sucesso}" class="alert alert-success alert-dismissible fade show">
             <i class="bi bi-check-circle"></i> <span th:text="${sucesso}"></span>
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
+
         <div th:if="${erro}" class="alert alert-danger alert-dismissible fade show">
             <i class="bi bi-exclamation-triangle"></i> <span th:text="${erro}"></span>
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
@@ -52,25 +155,30 @@
 
         <!-- Card Principal -->
         <div class="card">
-            <div class="card-header bg-primary text-white">
+            <div class="card-header">
                 <h4 class="mb-0"><i class="bi bi-people"></i> Lista de Alunos</h4>
             </div>
+
             <div class="card-body">
-                <!-- Barra de Pesquisa e Botão -->
+
+                <!-- Barra de Pesquisa -->
                 <div class="row mb-3">
                     <div class="col-md-8">
                         <form method="get" action="/alunos">
                             <div class="input-group">
                                 <input type="text" class="form-control" name="nome" th:value="${nome}" placeholder="Pesquisar por nome...">
+
                                 <button class="btn btn-primary" type="submit">
                                     <i class="bi bi-search"></i> Pesquisar
                                 </button>
+
                                 <a th:if="${nome}" href="/alunos" class="btn btn-secondary">
                                     <i class="bi bi-x-circle"></i> Limpar
                                 </a>
                             </div>
                         </form>
                     </div>
+
                     <div class="col-md-4 text-end">
                         <a href="/alunos/novo" class="btn btn-success">
                             <i class="bi bi-person-plus"></i> Cadastrar Aluno
@@ -80,33 +188,45 @@
 
                 <!-- Tabela -->
                 <div class="table-responsive">
-                    <table class="table table-striped table-hover">
-                        <thead class="table-dark">
+                    <table class="table table-striped align-middle">
+                        <thead>
                             <tr>
                                 <th>Nome</th>
                                 <th>Email</th>
                                 <th>Idade</th>
                                 <th>Telefone</th>
+                                <th>Data Cadastro</th>
+                                <th>Última Modificação</th>
                                 <th class="text-center">Ações</th>
                             </tr>
                         </thead>
+
                         <tbody>
                             <tr th:if="${alunos.empty}">
-                                <td colspan="5" class="text-center text-muted">Nenhum aluno encontrado</td>
+                                <td colspan="7" class="text-center text-muted">Nenhum aluno encontrado</td>
                             </tr>
+
                             <tr th:each="aluno : ${alunos.content}">
                                 <td th:text="${aluno.nome}"></td>
                                 <td th:text="${aluno.email}"></td>
                                 <td th:text="${aluno.idade}"></td>
                                 <td th:text="${aluno.telefone != null ? aluno.telefone : 'Não informado'}"></td>
+                                <td th:text="${aluno.dataCadastro != null ? #temporals.format(aluno.dataCadastro, 'dd/MM/yyyy HH:mm') : 'N/A'}"></td>
+                                <td th:text="${aluno.dataUltimaModificacao != null ? #temporals.format(aluno.dataUltimaModificacao, 'dd/MM/yyyy HH:mm') : 'Nunca modificado'}"></td>
+
                                 <td class="text-center">
-                                    <a th:href="@{/alunos/detalhes/{id}(id=${aluno.id})}" class="btn btn-sm btn-info" title="Detalhes">
+                                    <a th:href="@{/alunos/detalhes/{id}(id=${aluno.id})}" 
+                                       class="btn btn-sm btn-info" title="Detalhes">
                                         <i class="bi bi-eye"></i>
                                     </a>
-                                    <a th:href="@{/alunos/editar/{id}(id=${aluno.id})}" class="btn btn-sm btn-warning" title="Editar">
+
+                                    <a th:href="@{/alunos/editar/{id}(id=${aluno.id})}" 
+                                       class="btn btn-sm btn-warning" title="Editar">
                                         <i class="bi bi-pencil"></i>
                                     </a>
-                                    <form th:action="@{/alunos/excluir/{id}(id=${aluno.id})}" method="post" style="display: inline;" 
+
+                                    <form th:action="@{/alunos/excluir/{id}(id=${aluno.id})}" 
+                                          method="post" style="display:inline;"
                                           onsubmit="return confirm('Tem certeza que deseja excluir este aluno?');">
                                         <button type="submit" class="btn btn-sm btn-danger" title="Excluir">
                                             <i class="bi bi-trash"></i>
@@ -114,37 +234,57 @@
                                     </form>
                                 </td>
                             </tr>
+
                         </tbody>
                     </table>
                 </div>
 
                 <!-- Paginação -->
-                <div th:if="${alunos.totalPages > 1}" class="d-flex justify-content-between align-items-center">
+                <div th:if="${alunos.totalPages > 1}" class="d-flex justify-content-between align-items-center mt-3">
+
                     <div>
-                        <span>Mostrando <span th:text="${alunos.number * alunos.size + 1}"></span> a 
-                              <span th:text="${alunos.number * alunos.size + alunos.numberOfElements}"></span> de 
-                              <span th:text="${alunos.totalElements}"></span> alunos</span>
+                        <span>
+                            Mostrando 
+                            <span th:text="${alunos.number * alunos.size + 1}"></span>
+                            a
+                            <span th:text="${alunos.number * alunos.size + alunos.numberOfElements}"></span>
+                            de
+                            <span th:text="${alunos.totalElements}"></span>
+                            alunos
+                        </span>
                     </div>
+
                     <nav>
                         <ul class="pagination mb-0">
                             <li class="page-item" th:classappend="${alunos.first} ? 'disabled'">
-                                <a class="page-link" th:href="@{/alunos(nome=${nome}, page=${alunos.number - 1})}">Anterior</a>
+                                <a class="page-link" th:href="@{/alunos(nome=${nome}, page=${alunos.number - 1})}">
+                                    Anterior
+                                </a>
                             </li>
-                            <li class="page-item" th:each="i : ${#numbers.sequence(0, alunos.totalPages - 1)}" 
+
+                            <li class="page-item"
+                                th:each="i : ${#numbers.sequence(0, alunos.totalPages - 1)}"
                                 th:classappend="${i == alunos.number} ? 'active'">
-                                <a class="page-link" th:href="@{/alunos(nome=${nome}, page=${i})}" th:text="${i + 1}"></a>
+                                <a class="page-link" th:href="@{/alunos(nome=${nome}, page=${i})}"
+                                   th:text="${i + 1}"></a>
                             </li>
+
                             <li class="page-item" th:classappend="${alunos.last} ? 'disabled'">
-                                <a class="page-link" th:href="@{/alunos(nome=${nome}, page=${alunos.number + 1})}">Próxima</a>
+                                <a class="page-link" th:href="@{/alunos(nome=${nome}, page=${alunos.number + 1})}">
+                                    Próxima
+                                </a>
                             </li>
                         </ul>
                     </nav>
+
                 </div>
+
             </div>
         </div>
+
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
 </body>
 </html>
-

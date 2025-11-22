@@ -96,5 +96,14 @@ public class Matricula {
         this.status = "CANCELADA";
         this.dataCancelamento = LocalDateTime.now();
     }
+
+    public void trancar() {
+        this.status = "TRANCADA";
+    }
+
+    public void transferir(Curso novoCurso) {
+        this.status = "TRANSFERIDA";
+        this.curso = novoCurso;
+    }
 }
 

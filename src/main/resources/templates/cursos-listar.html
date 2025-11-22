@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cursos - Sistema de Matrículas</title>
+    <title>Cursos - ClassFlow</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
     <style>
@@ -16,7 +16,7 @@
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
         <div class="container-fluid">
-            <a class="navbar-brand" href="/"><i class="bi bi-mortarboard-fill"></i> Sistema de Matrículas</a>
+            <a class="navbar-brand" href="/"><i class="bi bi-mortarboard-fill"></i> ClassFlow</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -31,7 +31,6 @@
                         <ul class="dropdown-menu">
                             <li><a class="dropdown-item" href="/relatorios/alunos-por-curso">Alunos por Curso</a></li>
                             <li><a class="dropdown-item" href="/relatorios/cursos-mais-procurados">Cursos Mais Procurados</a></li>
-                            <li><a class="dropdown-item" href="/relatorios/matriculas-por-periodo">Matrículas por Período</a></li>
                         </ul>
                     </li>
                 </ul>
@@ -86,12 +85,14 @@
                                 <th>Nome</th>
                                 <th>Categoria</th>
                                 <th>Carga Horária</th>
+                                <th>Data Cadastro</th>
+                                <th>Última Modificação</th>
                                 <th class="text-center">Ações</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr th:if="${cursos.empty}">
-                                <td colspan="4" class="text-center text-muted">Nenhum curso encontrado</td>
+                                <td colspan="6" class="text-center text-muted">Nenhum curso encontrado</td>
                             </tr>
                             <tr th:each="curso : ${cursos.content}">
                                 <td th:text="${curso.nome}"></td>
@@ -99,6 +100,8 @@
                                     <span class="badge bg-info" th:text="${curso.categoria}"></span>
                                 </td>
                                 <td th:text="${curso.cargaHoraria + ' horas'}"></td>
+                                <td th:text="${curso.dataCadastro != null ? #temporals.format(curso.dataCadastro, 'dd/MM/yyyy HH:mm') : 'N/A'}"></td>
+                                <td th:text="${curso.dataUltimaModificacao != null ? #temporals.format(curso.dataUltimaModificacao, 'dd/MM/yyyy HH:mm') : 'Nunca modificado'}"></td>
                                 <td class="text-center">
                                     <a th:href="@{/cursos/detalhes/{id}(id=${curso.id})}" class="btn btn-sm btn-info" title="Detalhes">
                                         <i class="bi bi-eye"></i>

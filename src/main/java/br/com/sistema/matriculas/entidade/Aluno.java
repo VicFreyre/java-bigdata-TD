@@ -38,6 +38,9 @@ public class Aluno {
     @Column(name = "data_cadastro")
     private LocalDateTime dataCadastro;
 
+    @Column(name = "data_ultima_modificacao")
+    private LocalDateTime dataUltimaModificacao;
+
     @OneToMany(mappedBy = "aluno", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Matricula> matriculas = new ArrayList<>();
 
@@ -110,6 +113,14 @@ public class Aluno {
 
     public void setDataCadastro(LocalDateTime dataCadastro) {
         this.dataCadastro = dataCadastro;
+    }
+
+    public LocalDateTime getDataUltimaModificacao() {
+        return dataUltimaModificacao;
+    }
+
+    public void setDataUltimaModificacao(LocalDateTime dataUltimaModificacao) {
+        this.dataUltimaModificacao = dataUltimaModificacao;
     }
 
     public List<Matricula> getMatriculas() {
