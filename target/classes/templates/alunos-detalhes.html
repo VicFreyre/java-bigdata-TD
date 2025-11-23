@@ -48,16 +48,15 @@
             box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
         }
 
-        /* TITULO DOS CARDS ALINHADO À ESQUERDA */
         .card-header {
             border-top-left-radius: 16px !important;
             border-top-right-radius: 16px !important;
             display: flex;
-            justify-content: flex-start !important; /* ALTERADO */
+            justify-content: flex-start !important;
             align-items: center;
             height: 60px;
-            padding-left: 20px !important; /* ALTERADO */
-            text-align: left !important; /* ALTERADO */
+            padding-left: 20px !important;
+            text-align: left !important;
         }
 
         .header-primary {
@@ -81,15 +80,14 @@
             border-radius: 10px;
         }
 
-        /* BOTÃO DETALHES IGUAL AO EDITAR */
-        .btn-detalhes {           /* ALTERADO */
-            background: #ffc107;  /* amarelo do btn-warning */
+        .btn-detalhes {
+            background: #ffc107;
             color: #000;
             border: none;
             border-radius: 10px;
         }
 
-        .btn-detalhes:hover {     /* ALTERADO */
+        .btn-detalhes:hover {
             background: #e0a800;
             color: #000;
         }
@@ -202,6 +200,7 @@
                                 <td>
                                     <span th:if="${matricula.status == 'ATIVA'}" class="badge bg-success">ATIVA</span>
                                     <span th:if="${matricula.status == 'CANCELADA'}" class="badge bg-danger">CANCELADA</span>
+                                    <span th:if="${matricula.status == 'TRANCADA'}" class="badge bg-warning text-dark">TRANCADA</span>
                                 </td>
                                 <td>
                                     <a th:href="@{/matriculas/detalhes/{id}(id=${matricula.id})}"
