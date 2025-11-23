@@ -31,13 +31,11 @@
             min-height: 100vh;
         }
 
-        /* NAVBAR */
         .navbar {
             background: var(--primary-gradient) !important;
             box-shadow: 0 4px 20px rgba(102, 126, 234, 0.3);
         }
 
-        /* CARDS */
         .card {
             border: none;
             border-radius: 16px;
@@ -52,22 +50,19 @@
             box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
         }
 
-        /* CARD HEADER */
         .card-header {
             border-top-left-radius: 16px !important;
             border-top-right-radius: 16px !important;
-            background: var(--primary-gradient); /* mesma cor da lista de alunos */
+            background: var(--primary-gradient);
             color: white;
         }
 
-        /* TABELA */
         .table thead th {
             background: #27292b !important;
             color: #ffffff;
             font-weight: 600;
         }
 
-        /* BADGES DE STATUS */
         .badge-status {
             font-weight: 500;
             font-size: 0.90rem;
@@ -79,7 +74,6 @@
         .badge-trancada { background: var(--warning-gradient); }
         .badge-transferida { background: var(--info-gradient); }
 
-        /* BOTÕES */
         .btn-primary,
         .btn-success,
         .btn-info,
@@ -93,7 +87,7 @@
         .btn-primary { background: var(--primary-gradient); border: none; }
         .btn-success { background: var(--success-gradient); border: none; }
         .btn-info { background: var(--info-gradient); border: none; color: #fff; }
-        .btn-warning { background: var(--warning-gradient); border: none; color: #fff; }
+        .btn-warning { background: var(--warning-gradient); border: none; color: black; }
         .btn-danger { background: var(--danger-gradient); border: none; color: #fff; }
 
         .btn-primary:hover,
@@ -102,21 +96,6 @@
         .btn-warning:hover,
         .btn-danger:hover {
             opacity: 0.9;
-        }
-
-        /* Ícone do lápis preto */
-        .btn-warning i {
-            color: black;
-        }
-
-        .btn-info i,
-        .btn-danger i {
-            color: #ffffff;
-        }
-
-        .btn-info:hover i,
-        .btn-danger:hover i {
-            color: #ffffff;
         }
     </style>
 </head>
@@ -129,7 +108,7 @@
             <a class="navbar-brand d-flex align-items-center" href="/">
                 <img src="https://i.ibb.co/whg0LrLg/image-removebg-preview.png" 
                      alt="logo" style="height:1.4em; width:auto; margin-right:8px;">
-                ClassFlow
+                 <strong>ClassFlow</strong>
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
@@ -171,8 +150,23 @@
                 <h4 class="mb-0"><i class="bi bi-clipboard-check"></i> Lista de Matrículas</h4>
             </div>
             <div class="card-body">
+
+                <!-- Barra de Pesquisa -->
                 <div class="row mb-3">
-                    <div class="col-12 text-end">
+                    <div class="col-md-8">
+                        <form method="get" action="/matriculas">
+                            <div class="input-group">
+                                <input type="text" class="form-control" name="numeroMatricula" th:value="${numeroMatricula}" placeholder="Pesquisar por Nº Matrícula...">
+                                <button class="btn btn-primary" type="submit">
+                                    <i class="bi bi-search"></i> Pesquisar
+                                </button>
+                                <a th:if="${numeroMatricula}" href="/matriculas" class="btn btn-secondary">
+                                    <i class="bi bi-x-circle"></i> Limpar
+                                </a>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="col-md-4 text-end">
                         <a href="/matriculas/novo" class="btn btn-success">
                             <i class="bi bi-clipboard-plus"></i> Nova Matrícula
                         </a>
@@ -184,6 +178,7 @@
                     <table class="table table-striped align-middle">
                         <thead>
                             <tr>
+                                <th>Nº Matrícula</th>
                                 <th>Aluno</th>
                                 <th>Curso</th>
                                 <th>Data da Matrícula</th>
@@ -193,9 +188,10 @@
                         </thead>
                         <tbody>
                             <tr th:if="${matriculas.empty}">
-                                <td colspan="5" class="text-center text-muted">Nenhuma matrícula encontrada</td>
+                                <td colspan="6" class="text-center text-muted">Nenhuma matrícula encontrada</td>
                             </tr>
                             <tr th:each="matricula : ${matriculas.content}">
+                                <td th:text="${matricula.numeroMatricula}"></td>
                                 <td th:text="${matricula.nomeAluno}"></td>
                                 <td th:text="${matricula.nomeCurso}"></td>
                                 <td th:text="${#temporals.format(matricula.dataMatricula, 'dd/MM/yyyy HH:mm')}"></td>
@@ -209,7 +205,8 @@
                                     <a th:href="@{/matriculas/detalhes/{id}(id=${matricula.id})}" class="btn btn-sm btn-info" title="Detalhes">
                                         <i class="bi bi-eye"></i>
                                     </a>
-                                    <a th:if="${matricula.status == 'ATIVA'}" 
+                                    <!-- Botão Editar aparece para ATIVA ou TRANCADA -->
+                                    <a th:if="${matricula.status == 'ATIVA' or matricula.status == 'TRANCADA'}" 
                                        th:href="@{/matriculas/editar/{id}(id=${matricula.id})}" 
                                        class="btn btn-sm btn-warning" title="Editar">
                                         <i class="bi bi-pencil"></i>
@@ -223,25 +220,32 @@
                 <!-- Paginação -->
                 <div th:if="${matriculas.totalPages > 1}" class="d-flex justify-content-between align-items-center mt-3">
                     <div>
-                        <span>Mostrando <span th:text="${matriculas.number * matriculas.size + 1}"></span> a 
-                              <span th:text="${matriculas.number * matriculas.size + matriculas.numberOfElements}"></span> de 
-                              <span th:text="${matriculas.totalElements}"></span> matrículas</span>
+                        <span>
+                            Mostrando 
+                            <span th:text="${matriculas.number * matriculas.size + 1}"></span>
+                            a
+                            <span th:text="${matriculas.number * matriculas.size + matriculas.numberOfElements}"></span>
+                            de
+                            <span th:text="${matriculas.totalElements}"></span>
+                            matrículas
+                        </span>
                     </div>
                     <nav>
                         <ul class="pagination mb-0">
                             <li class="page-item" th:classappend="${matriculas.first} ? 'disabled'">
-                                <a class="page-link" th:href="@{/matriculas(page=${matriculas.number - 1})}">Anterior</a>
+                                <a class="page-link" th:href="@{/matriculas(numeroMatricula=${numeroMatricula}, page=${matriculas.number - 1})}">Anterior</a>
                             </li>
                             <li class="page-item" th:each="i : ${#numbers.sequence(0, matriculas.totalPages - 1)}" 
                                 th:classappend="${i == matriculas.number} ? 'active'">
-                                <a class="page-link" th:href="@{/matriculas(page=${i})}" th:text="${i + 1}"></a>
+                                <a class="page-link" th:href="@{/matriculas(numeroMatricula=${numeroMatricula}, page=${i})}" th:text="${i + 1}"></a>
                             </li>
                             <li class="page-item" th:classappend="${matriculas.last} ? 'disabled'">
-                                <a class="page-link" th:href="@{/matriculas(page=${matriculas.number + 1})}">Próxima</a>
+                                <a class="page-link" th:href="@{/matriculas(numeroMatricula=${numeroMatricula}, page=${matriculas.number + 1})}">Próxima</a>
                             </li>
                         </ul>
                     </nav>
                 </div>
+
             </div>
         </div>
     </div>

@@ -14,8 +14,8 @@
     <style>
         :root {
             --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            --success-color: #28a745; /* verde tradicional para ATIVA */
-            --danger-color: #dc3545;  /* vermelho para cancelar */
+            --success-color: #28a745;
+            --danger-color: #dc3545;
             --info-gradient: linear-gradient(135deg, #1e9e49 0%, #24be5f 100%);
         }
 
@@ -61,20 +61,19 @@
         .header-primary { background: var(--primary-gradient); color: #fff; }
         .header-info { background: var(--info-gradient); color: #fff; }
 
-        .btn-primary, .btn-secondary {
+        .btn-primary, .btn-warning, .btn-secondary {
             border-radius: 10px;
         }
 
-        .btn-cancel {
-            background: var(--danger-color);
-            color: #fff;
+        .btn-warning {
+            background: #ffc107;
+            color: #000;
             border: none;
-            border-radius: 10px;
         }
 
-        .btn-cancel:hover {
-            background: #c82333;
-            color: #fff;
+        .btn-warning:hover {
+            background: #e0a800;
+            color: #000;
         }
 
         .table thead {
@@ -82,9 +81,10 @@
             color: #fff;
         }
 
-        .badge.bg-success {
-            background: var(--success-color);
-        }
+        .badge.bg-success { background: var(--success-color); }
+        .badge.bg-danger { background: var(--danger-color); }
+        .badge.bg-warning { background: #ffc107; color: #000; }
+        .badge.bg-info { background: var(--info-gradient); color: #fff; }
     </style>
 </head>
 <body>
@@ -93,9 +93,9 @@
     <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
         <div class="container-fluid">
             <a class="navbar-brand d-flex align-items-center" href="/">
-                <img src="https://i.ibb.co/whg0LrLg/image-removebg-preview.png" 
-                     alt="logo" style="height:1.4em; width:auto; margin-right:8px;">
-                ClassFlow
+                <img src="https://i.ibb.co/whg0LrLg/image-removebg-preview.png" alt="logo"
+                     style="height:1.4em; width:auto; margin-right:8px;">
+                <strong>ClassFlow</strong>
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
@@ -106,15 +106,6 @@
                     <li class="nav-item"><a class="nav-link" href="/alunos"><i class="bi bi-people"></i> Alunos</a></li>
                     <li class="nav-item"><a class="nav-link" href="/cursos"><i class="bi bi-book"></i> Cursos</a></li>
                     <li class="nav-item"><a class="nav-link active" href="/matriculas"><i class="bi bi-clipboard-check"></i> Matrículas</a></li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
-                            <i class="bi bi-graph-up"></i> Relatórios
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="/relatorios/alunos-por-curso"><i class="bi bi-people-fill"></i> Alunos por Curso</a></li>
-                            <li><a class="dropdown-item" href="/relatorios/cursos-mais-procurados"><i class="bi bi-book-half"></i> Cursos Mais Procurados</a></li>
-                        </ul>
-                    </li>
                 </ul>
             </div>
         </div>
@@ -130,10 +121,11 @@
             <div class="card-body">
                 <div class="row">
                     <div class="col-md-6">
+                        <p><strong>Número da Matrícula:</strong> <span th:text="${matricula.numeroMatricula}"></span></p>
                         <p><strong>Aluno:</strong> <span th:text="${matricula.nomeAluno}"></span></p>
                         <p><strong>Curso:</strong> <span th:text="${matricula.nomeCurso}"></span></p>
                         <p><strong>Data da Matrícula:</strong> 
-                           <span th:text="${#temporals.format(matricula.dataMatricula, 'dd/MM/yyyy HH:mm')}"></span></p>
+                            <span th:text="${#temporals.format(matricula.dataMatricula, 'dd/MM/yyyy HH:mm')}"></span></p>
                     </div>
                     <div class="col-md-6">
                         <p><strong>Status:</strong> 
@@ -149,14 +141,9 @@
                     </div>
                 </div>
                 <div class="mt-3">
-                    <form th:if="${matricula.status == 'ATIVA'}" 
-                          th:action="@{/matriculas/cancelar/{id}(id=${matricula.id})}" 
-                          method="post" style="display: inline;" 
-                          onsubmit="return confirm('Tem certeza que deseja cancelar esta matrícula?');">
-                        <button type="submit" class="btn btn-cancel">
-                            <i class="bi bi-x-circle"></i> Cancelar Matrícula
-                        </button>
-                    </form>
+                    <a th:href="@{/matriculas/editar/{id}(id=${matricula.id})}" class="btn btn-warning me-2">
+                        <i class="bi bi-pencil"></i> Editar
+                    </a>
                     <a href="/matriculas" class="btn btn-secondary">
                         <i class="bi bi-arrow-left"></i> Voltar
                     </a>

@@ -7,6 +7,9 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "matriculas")
 public class Matricula {
+    public void reativar() {
+        this.status = "ATIVA";
+    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,8 +25,12 @@ public class Matricula {
     @JoinColumn(name = "id_curso", nullable = false)
     private Curso curso;
 
+
     @Column(name = "data_matricula")
     private LocalDateTime dataMatricula;
+
+    @Column(name = "numero_matricula", length = 6, nullable = false, unique = true)
+    private String numeroMatricula;
 
     @Column(nullable = false, length = 20)
     private String status;
@@ -37,10 +44,19 @@ public class Matricula {
         this.status = "ATIVA";
     }
 
-    public Matricula(Aluno aluno, Curso curso) {
+
+    public Matricula(Aluno aluno, Curso curso, String numeroMatricula) {
         this();
         this.aluno = aluno;
         this.curso = curso;
+        this.numeroMatricula = numeroMatricula;
+    }
+    public String getNumeroMatricula() {
+        return numeroMatricula;
+    }
+
+    public void setNumeroMatricula(String numeroMatricula) {
+        this.numeroMatricula = numeroMatricula;
     }
 
     // Getters e Setters

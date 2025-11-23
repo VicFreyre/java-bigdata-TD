@@ -31,6 +31,9 @@ public interface MatriculaRepositorio extends JpaRepository<Matricula, Long> {
     @Query("SELECT m FROM Matricula m WHERE m.aluno.id = :idAluno AND m.curso.id = :idCurso AND m.status = 'ATIVA'")
     Optional<Matricula> buscarMatriculaAtiva(@Param("idAluno") Long idAluno, @Param("idCurso") Long idCurso);
 
+    @Query("SELECT m FROM Matricula m WHERE m.numeroMatricula LIKE %:numeroMatricula%")
+    Page<Matricula> buscarPorNumeroMatricula(@Param("numeroMatricula") String numeroMatricula, Pageable pageable);
+
     @Query("SELECT COUNT(m) FROM Matricula m WHERE m.curso.id = :idCurso AND m.status = 'ATIVA'")
     Long contarMatriculasAtivasPorCurso(@Param("idCurso") Long idCurso);
 }

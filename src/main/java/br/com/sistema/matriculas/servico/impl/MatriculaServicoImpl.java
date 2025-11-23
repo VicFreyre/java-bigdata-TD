@@ -23,6 +23,17 @@ import java.util.stream.Collectors;
 @Service
 @Transactional
 public class MatriculaServicoImpl implements MatriculaServico {
+    @Override
+    public void reativar(Long id) {
+        Matricula matricula = matriculaRepositorio.findById(id)
+                .orElseThrow(() -> new RecursoNaoEncontradoException(
+                        "Matrícula não encontrada com ID: " + id));
+        if (!"TRANCADA".equals(matricula.getStatus())) {
+            throw new IllegalArgumentException("Apenas matrículas trancadas podem ser reativadas");
+        }
+        matricula.reativar();
+        matriculaRepositorio.save(matricula);
+    }
 
     @Autowired
     private MatriculaRepositorio matriculaRepositorio;
@@ -32,6 +43,12 @@ public class MatriculaServicoImpl implements MatriculaServico {
 
     @Autowired
     private CursoRepositorio cursoRepositorio;
+
+    @Override
+    public Page<MatriculaDTO> buscarPorNumeroMatricula(String numeroMatricula, Pageable pageable) {
+        return matriculaRepositorio.buscarPorNumeroMatricula(numeroMatricula, pageable)
+                .map(this::converterParaDTO);
+    }
 
     @Override
     public Page<MatriculaDTO> listarTodas(Pageable pageable) {
@@ -48,34 +65,40 @@ public class MatriculaServicoImpl implements MatriculaServico {
     @Override
     public MatriculaDTO salvar(MatriculaDTO matriculaDTO) {
         Aluno aluno = alunoRepositorio.findById(matriculaDTO.getIdAluno())
-                .orElseThrow(() -> new RecursoNaoEncontradoException("Aluno não encontrado com ID: " + matriculaDTO.getIdAluno()));
-        
+                .orElseThrow(() -> new RecursoNaoEncontradoException(
+                        "Aluno não encontrado com ID: " + matriculaDTO.getIdAluno()));
+
         Curso curso = cursoRepositorio.findById(matriculaDTO.getIdCurso())
-                .orElseThrow(() -> new RecursoNaoEncontradoException("Curso não encontrado com ID: " + matriculaDTO.getIdCurso()));
-        
+                .orElseThrow(() -> new RecursoNaoEncontradoException(
+                        "Curso não encontrado com ID: " + matriculaDTO.getIdCurso()));
+
         // Verificar se já existe matrícula ativa
         Optional<Matricula> matriculaExistente = matriculaRepositorio.buscarMatriculaAtiva(
                 matriculaDTO.getIdAluno(), matriculaDTO.getIdCurso());
-        
+
         if (matriculaExistente.isPresent()) {
             throw new IllegalArgumentException("Aluno já possui matrícula ativa neste curso");
         }
-        
-        Matricula matricula = new Matricula(aluno, curso);
+
+        // Gerar número de matrícula: 4 dígitos aleatórios + "25"
+        String numeroMatricula = String.format("%04d25", (int) (Math.random() * 10000));
+
+        Matricula matricula = new Matricula(aluno, curso, numeroMatricula);
         matricula = matriculaRepositorio.save(matricula);
-        
+
         return converterParaDTO(matricula);
     }
 
     @Override
     public void cancelar(Long id) {
         Matricula matricula = matriculaRepositorio.findById(id)
-                .orElseThrow(() -> new RecursoNaoEncontradoException("Matrícula não encontrada com ID: " + id));
-        
+                .orElseThrow(() -> new RecursoNaoEncontradoException(
+                        "Matrícula não encontrada com ID: " + id));
+
         if ("CANCELADA".equals(matricula.getStatus())) {
             throw new IllegalArgumentException("Matrícula já está cancelada");
         }
-        
+
         matricula.cancelar();
         matriculaRepositorio.save(matricula);
     }
@@ -83,39 +106,17 @@ public class MatriculaServicoImpl implements MatriculaServico {
     @Override
     public void trancar(Long id) {
         Matricula matricula = matriculaRepositorio.findById(id)
-                .orElseThrow(() -> new RecursoNaoEncontradoException("Matrícula não encontrada com ID: " + id));
-        
+                .orElseThrow(() -> new RecursoNaoEncontradoException(
+                        "Matrícula não encontrada com ID: " + id));
+
         if (!"ATIVA".equals(matricula.getStatus())) {
             throw new IllegalArgumentException("Apenas matrículas ativas podem ser trancadas");
         }
-        
+
         matricula.trancar();
         matriculaRepositorio.save(matricula);
     }
 
-    @Override
-    public void transferir(Long id, Long novoCursoId) {
-        Matricula matricula = matriculaRepositorio.findById(id)
-                .orElseThrow(() -> new RecursoNaoEncontradoException("Matrícula não encontrada com ID: " + id));
-        
-        if (!"ATIVA".equals(matricula.getStatus())) {
-            throw new IllegalArgumentException("Apenas matrículas ativas podem ser transferidas");
-        }
-        
-        Curso novoCurso = cursoRepositorio.findById(novoCursoId)
-                .orElseThrow(() -> new RecursoNaoEncontradoException("Curso não encontrado com ID: " + novoCursoId));
-        
-        // Verificar se já existe matrícula ativa no novo curso
-        Optional<Matricula> matriculaExistente = matriculaRepositorio.buscarMatriculaAtiva(
-                matricula.getAluno().getId(), novoCursoId);
-        
-        if (matriculaExistente.isPresent() && !matriculaExistente.get().getId().equals(id)) {
-            throw new IllegalArgumentException("Aluno já possui matrícula ativa neste curso");
-        }
-        
-        matricula.transferir(novoCurso);
-        matriculaRepositorio.save(matricula);
-    }
 
     @Override
     public List<MatriculaDTO> buscarPorAluno(Long idAluno) {
@@ -152,9 +153,9 @@ public class MatriculaServicoImpl implements MatriculaServico {
         dto.setIdCurso(matricula.getCurso().getId());
         dto.setNomeCurso(matricula.getCurso().getNome());
         dto.setDataMatricula(matricula.getDataMatricula());
+        dto.setNumeroMatricula(matricula.getNumeroMatricula());
         dto.setStatus(matricula.getStatus());
         dto.setDataCancelamento(matricula.getDataCancelamento());
         return dto;
     }
 }
-

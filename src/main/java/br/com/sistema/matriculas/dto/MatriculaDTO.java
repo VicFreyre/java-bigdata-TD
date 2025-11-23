@@ -19,11 +19,21 @@ public class MatriculaDTO {
 
     private String nomeCurso;
 
+
     private LocalDateTime dataMatricula;
+
+    private String numeroMatricula;
 
     private String status;
 
     private LocalDateTime dataCancelamento;
+    public String getNumeroMatricula() {
+        return numeroMatricula;
+    }
+
+    public void setNumeroMatricula(String numeroMatricula) {
+        this.numeroMatricula = numeroMatricula;
+    }
 
     // Construtores
     public MatriculaDTO() {

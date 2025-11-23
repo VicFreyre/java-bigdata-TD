@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.Optional;
 
 public interface MatriculaServico {
+        void reativar(Long id);
+    Page<MatriculaDTO> buscarPorNumeroMatricula(String numeroMatricula, Pageable pageable);
 
     Page<MatriculaDTO> listarTodas(Pageable pageable);
 
@@ -20,7 +22,6 @@ public interface MatriculaServico {
 
     void trancar(Long id);
 
-    void transferir(Long id, Long novoCursoId);
 
     List<MatriculaDTO> buscarPorAluno(Long idAluno);
 

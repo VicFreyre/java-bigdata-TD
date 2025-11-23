@@ -16,7 +16,7 @@
             --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             --success-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
             --info-gradient: linear-gradient(135deg, #1e9e49 0%, #24be5f 100%);
-            --warning-gradient: linear-gradient(135deg, #ffc107 0%, #e0a800 100%);
+            --warning-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         }
 
         * { font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
@@ -44,7 +44,7 @@
 
         .card:hover {
             transform: translateY(-4px);
-            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
+            box-shadow: 0 12px 40px rgba(255, 255, 255, 0.12);
         }
 
         .card-header {
@@ -118,11 +118,11 @@
         </div>
 
         <!-- Card Principal -->
-        <div class="card">
-            <div class="card-header header-warning">
-                <h4 class="mb-0"><i class="bi bi-pencil"></i> Editar Matrícula</h4>
-            </div>
-            <div class="card-body">
+   <div class="card">
+    <div class="card-header header-warning" style="color: #fff;">
+        <h4 class="mb-0"><i class="bi bi-pencil"></i> Editar Matrícula</h4>
+    </div>
+    <div class="card-body">
                 <!-- Informações da Matrícula -->
                 <div class="row mb-4">
                     <div class="col-md-6">
@@ -132,7 +132,8 @@
                         <p><strong>Data da Matrícula:</strong> 
                            <span th:text="${#temporals.format(matricula.dataMatricula, 'dd/MM/yyyy HH:mm')}"></span></p>
                         <p><strong>Status:</strong> 
-                            <span class="badge bg-success">ATIVA</span>
+                            <span th:if="${matricula.status} == 'ATIVA'" class="badge bg-success">ATIVA</span>
+                            <span th:if="${matricula.status} == 'TRANCADA'" class="badge bg-warning text-dark">TRANCADA</span>
                         </p>
                     </div>
                 </div>
@@ -141,9 +142,22 @@
 
                 <!-- Ações -->
                 <h5 class="mb-3">Ações Disponíveis</h5>
+                
                 <form th:action="@{/matriculas/atualizar}" method="post">
                     <input type="hidden" name="id" th:value="${matricula.id}">
 
+                    <!-- Reativar Matrícula -->
+                    <div th:if="${matricula.status} == 'TRANCADA'" class="card mb-3">
+                        <div class="card-body">
+                            <h6><i class="bi bi-play-circle text-success"></i> Reativar Matrícula</h6>
+                            <p class="text-muted">Reativa a matrícula trancada, tornando-a ativa novamente.</p>
+                            <button type="submit" name="acao" value="reativar" class="btn btn-success"
+                                    onclick="return confirm('Tem certeza que deseja reativar esta matrícula?');">
+                                <i class="bi bi-play-circle"></i> Reativar Matrícula
+                            </button>
+                        </div>
+                    </div>
+                    
                     <!-- Cancelar Matrícula -->
                     <div class="card mb-3">
                         <div class="card-body">
@@ -168,32 +182,6 @@
                         </div>
                     </div>
 
-                    <!-- Transferir para Outro Curso -->
-                    <div class="card mb-3">
-                        <div class="card-body">
-                            <h6><i class="bi bi-arrow-left-right text-info"></i> Transferir para Outro Curso</h6>
-                            <p class="text-muted">Transfere a matrícula do aluno para outro curso.</p>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <label for="novoCurso" class="form-label">Selecione o novo curso:</label>
-                                    <select class="form-select" id="novoCurso" name="novoCursoId" required>
-                                        <option value="">-- Selecione um curso --</option>
-                                        <option th:each="curso : ${cursos}" 
-                                                th:value="${curso.id}" 
-                                                th:text="${curso.nome}"
-                                                th:selected="${curso.id == matricula.idCurso}">
-                                        </option>
-                                    </select>
-                                </div>
-                                <div class="col-md-6 d-flex align-items-end">
-                                    <button type="submit" name="acao" value="transferir" class="btn btn-info text-white"
-                                            onclick="return confirm('Tem certeza que deseja transferir esta matrícula?');">
-                                        <i class="bi bi-arrow-left-right"></i> Transferir Matrícula
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
                 </form>
 
                 <div class="mt-3">

@@ -36,10 +36,16 @@ public class MatriculaControlador {
     public String listar(
             @RequestParam(value = "page", defaultValue = "0") int page,
             @RequestParam(value = "size", defaultValue = "10") int size,
+            @RequestParam(value = "numeroMatricula", required = false) String numeroMatricula,
             Model model) {
 
         Pageable pageable = PageRequest.of(page, size);
-        Page<MatriculaDTO> matriculas = matriculaServico.listarTodas(pageable);
+        Page<MatriculaDTO> matriculas;
+        if (numeroMatricula != null && !numeroMatricula.isEmpty()) {
+            matriculas = matriculaServico.buscarPorNumeroMatricula(numeroMatricula, pageable);
+        } else {
+            matriculas = matriculaServico.listarTodas(pageable);
+        }
 
         model.addAttribute("matriculas", matriculas);
         return "matriculas-listar";
@@ -98,8 +104,8 @@ public class MatriculaControlador {
     public String editar(@PathVariable Long id, Model model, RedirectAttributes redirectAttributes) {
         return matriculaServico.buscarPorId(id)
                 .map(matriculaDTO -> {
-                    if (!"ATIVA".equals(matriculaDTO.getStatus())) {
-                        redirectAttributes.addFlashAttribute("erro", "Apenas matrículas ativas podem ser editadas");
+                    if (!"ATIVA".equals(matriculaDTO.getStatus()) && !"TRANCADA".equals(matriculaDTO.getStatus())) {
+                        redirectAttributes.addFlashAttribute("erro", "Apenas matrículas ativas ou trancadas podem ser editadas");
                         return "redirect:/matriculas";
                     }
                     List<CursoDTO> cursos = cursoServico.listarTodos();
@@ -125,13 +131,10 @@ public class MatriculaControlador {
             } else if ("trancar".equals(acao)) {
                 matriculaServico.trancar(id);
                 redirectAttributes.addFlashAttribute("sucesso", "Matrícula trancada com sucesso!");
-            } else if ("transferir".equals(acao)) {
-                if (novoCursoId == null) {
-                    redirectAttributes.addFlashAttribute("erro", "Selecione um curso para transferência");
-                    return "redirect:/matriculas/editar/" + id;
-                }
-                matriculaServico.transferir(id, novoCursoId);
-                redirectAttributes.addFlashAttribute("sucesso", "Matrícula transferida com sucesso!");
+            } else if ("reativar".equals(acao)) {
+                matriculaServico.reativar(id);
+                redirectAttributes.addFlashAttribute("sucesso", "Matrícula reativada com sucesso!");
+            // opção de transferência removida
             }
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("erro", e.getMessage());

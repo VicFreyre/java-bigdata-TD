@@ -64,7 +64,8 @@
                         <p><strong>Data da Matrícula:</strong> 
                            <span th:text="${#temporals.format(matricula.dataMatricula, 'dd/MM/yyyy HH:mm')}"></span></p>
                         <p><strong>Status:</strong> 
-                            <span class="badge bg-success">ATIVA</span>
+                            <span th:if="${matricula.status} == 'ATIVA'" class="badge bg-success">ATIVA</span>
+                            <span th:if="${matricula.status} == 'TRANCADA'" class="badge bg-warning text-dark">TRANCADA</span>
                         </p>
                     </div>
                 </div>
@@ -76,6 +77,17 @@
                 
                 <form th:action="@{/matriculas/atualizar}" method="post">
                     <input type="hidden" name="id" th:value="${matricula.id}">
+                    <!-- Reativar Matrícula -->
+                    <div th:if="${matricula.status} == 'TRANCADA'" class="card mb-3">
+                        <div class="card-body">
+                            <h6><i class="bi bi-play-circle text-success"></i> Reativar Matrícula</h6>
+                            <p class="text-muted">Reativa a matrícula trancada, tornando-a ativa novamente.</p>
+                            <button type="submit" name="acao" value="reativar" class="btn btn-success"
+                                    onclick="return confirm('Tem certeza que deseja reativar esta matrícula?');">
+                                <i class="bi bi-play-circle"></i> Reativar Matrícula
+                            </button>
+                        </div>
+                    </div>
                     
                     <!-- Cancelar Matrícula -->
                     <div class="card mb-3">
@@ -102,31 +114,6 @@
                     </div>
 
                     <!-- Transferir para Outro Curso -->
-                    <div class="card mb-3">
-                        <div class="card-body">
-                            <h6><i class="bi bi-arrow-left-right text-info"></i> Transferir para Outro Curso</h6>
-                            <p class="text-muted">Transfere a matrícula do aluno para outro curso.</p>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <label for="novoCurso" class="form-label">Selecione o novo curso:</label>
-                                    <select class="form-select" id="novoCurso" name="novoCursoId" required>
-                                        <option value="">-- Selecione um curso --</option>
-                                        <option th:each="curso : ${cursos}" 
-                                                th:value="${curso.id}" 
-                                                th:text="${curso.nome}"
-                                                th:selected="${curso.id == matricula.idCurso}">
-                                        </option>
-                                    </select>
-                                </div>
-                                <div class="col-md-6 d-flex align-items-end">
-                                    <button type="submit" name="acao" value="transferir" class="btn btn-info text-white"
-                                            onclick="return confirm('Tem certeza que deseja transferir esta matrícula?');">
-                                        <i class="bi bi-arrow-left-right"></i> Transferir Matrícula
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
                 </form>
 
                 <div class="mt-3">
