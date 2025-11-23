@@ -58,6 +58,8 @@ public class Aluno {
         this.telefone = telefone;
     }
 
+        
+
     // Getters e Setters
     public Long getId() {
         return id;

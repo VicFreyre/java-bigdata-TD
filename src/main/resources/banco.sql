@@ -3,14 +3,7 @@
 -- PostgreSQL 17
 -- ============================================
 
--- Remover objetos existentes (se necessário)
-DROP VIEW IF EXISTS vw_matriculas_detalhes CASCADE;
-DROP TRIGGER IF EXISTS trg_definir_dados_matricula ON matriculas CASCADE;
-DROP FUNCTION IF EXISTS definir_dados_matricula() CASCADE;
-DROP FUNCTION IF EXISTS realizar_matricula(INT, INT) CASCADE;
-DROP TABLE IF EXISTS matriculas CASCADE;
-DROP TABLE IF EXISTS alunos CASCADE;
-DROP TABLE IF EXISTS cursos CASCADE;
+
 
 -- ============================================
 -- TABELA: alunos

@@ -38,6 +38,8 @@ public class Matricula {
     @Column(name = "data_cancelamento")
     private LocalDateTime dataCancelamento;
 
+
+    
     // Construtores
     public Matricula() {
         this.dataMatricula = LocalDateTime.now();

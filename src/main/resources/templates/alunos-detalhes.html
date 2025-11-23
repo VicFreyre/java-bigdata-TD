@@ -182,6 +182,7 @@
                         <thead>
                             <tr>
                                 <th>Curso</th>
+                                <th>Nº Matrícula</th>
                                 <th>Data da Matrícula</th>
                                 <th>Status</th>
                                 <th>Ações</th>
@@ -191,27 +192,23 @@
                         <tbody>
 
                             <tr th:if="${historico == null || historico.empty}">
-                                <td colspan="4" class="text-center text-muted">Nenhuma matrícula encontrada</td>
+                                <td colspan="5" class="text-center text-muted">Nenhuma matrícula encontrada</td>
                             </tr>
 
                             <tr th:each="matricula : ${historico}">
                                 <td th:text="${matricula.nomeCurso}"></td>
-
+                                <td th:text="${matricula.numeroMatricula}"></td>
                                 <td th:text="${#temporals.format(matricula.dataMatricula, 'dd/MM/yyyy HH:mm')}"></td>
-
                                 <td>
                                     <span th:if="${matricula.status == 'ATIVA'}" class="badge bg-success">ATIVA</span>
                                     <span th:if="${matricula.status == 'CANCELADA'}" class="badge bg-danger">CANCELADA</span>
                                 </td>
-
                                 <td>
-                                    <!-- DETALHES IGUAL AO BOTÃO EDITAR -->
                                     <a th:href="@{/matriculas/detalhes/{id}(id=${matricula.id})}"
                                        class="btn btn-sm btn-detalhes">
                                         <i class="bi bi-eye"></i> Detalhes
                                     </a>
                                 </td>
-
                             </tr>
 
                         </tbody>
