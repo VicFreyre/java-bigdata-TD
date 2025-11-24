@@ -234,8 +234,8 @@ public class Aluno extends Pessoa {
 }
 ```
 
-### 4. Abstração
-A abstração consiste em representar entidades do mundo real por meio de modelos lógicos chamados classes, expondo apenas informações essenciais e ocultando detalhes internos.
+### 4. Polimorfismo
+O polimorfismo aparece tanto em nível de sobrescrita (override) quanto de sobrecarregamento (overload)
 ```java
 public interface MatriculaServico {
     void cancelar(Long id);
