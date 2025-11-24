@@ -183,6 +183,9 @@ A aplicação expõe endpoints para CRUD de alunos, cursos e matrículas.
 
 <img width="1381" height="335" alt="image" src="https://github.com/user-attachments/assets/438c9365-31c8-4115-9857-0dd3f24efd66" />
 
+<img width="1649" height="1065" alt="image" src="https://github.com/user-attachments/assets/298e3b06-4165-4b38-8eed-dc4306689104" />
+
+
 ### Exemplo de requisição – Criar Aluno
  ```json
 
