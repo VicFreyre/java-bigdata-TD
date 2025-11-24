@@ -1,17 +1,9 @@
-# Sistema de Matrículas
+## 🗃️ Sistema de Matrículas – ClassFlow
 
-Sistema completo de gerenciamento de matrículas desenvolvido com Spring Boot, seguindo princípios de POO rigorosa e com interface moderna e intuitiva.
+O **ClassFlow** é um sistema de gerenciamento de matrículas desenvolvido em **Java 17** com **Spring Boot**, utilizando arquitetura MVC, serviços e DTOs para garantir organização e baixo acoplamento. Ele se conecta ao banco **PostgreSQL** por meio do **Spring Data JPA/Hibernate**, que realiza o mapeamento objeto-relacional, validações e operações transacionais. O sistema controla alunos, cursos e matrículas com eficiência, integrando boas práticas de **POO**, módulos bem estruturados e recursos avançados do PostgreSQL, como **views, triggers e procedures**.
 
-## 📋 Índice
+<img width="1917" height="899" alt="image" src="https://github.com/user-attachments/assets/f4b0e60b-6327-401c-8fa1-d0fe9b4be6bf" />
 
-- [Pré-requisitos](#pré-requisitos)
-- [Tecnologias](#tecnologias)
-- [Instalação e Configuração](#instalação-e-configuração)
-- [Executando o Projeto](#executando-o-projeto)
-- [Estrutura do Projeto](#estrutura-do-projeto)
-- [Funcionalidades](#funcionalidades)
-- [Banco de Dados](#banco-de-dados)
-- [Scripts SQL](#scripts-sql)
 
 ## 🔧 Pré-requisitos
 
@@ -22,25 +14,12 @@ Antes de executar o projeto, certifique-se de ter instalado:
 - **PostgreSQL 17**
 - **IDE** (IntelliJ IDEA, Eclipse, VS Code, etc.)
 
-## 🛠️ Tecnologias
-
-- **Java 17.0.12**
-- **Spring Boot 3.2.0**
-- **Spring Web**
-- **Spring Data JPA**
-- **PostgreSQL Driver (PostgreSQL 17)**
-- **Thymeleaf**
-- **Bootstrap 5.3.0**
-- **Jakarta Validation (Bean Validation)**
-- **Lombok**
-- **ModelMapper**
-
 ## 📦 Instalação e Configuração
 
 ### 1. Clone o repositório
 
 ```bash
-git clone <url-do-repositorio>
+git clone https://github.com/VicFreyre/java-bigdata-TD
 cd sistema-matriculas
 ```
 
@@ -57,7 +36,7 @@ CREATE DATABASE sistema_matriculas;
 ```properties
 spring.datasource.url=jdbc:postgresql://localhost:5432/sistema_matriculas
 spring.datasource.username=postgres
-spring.datasource.password=1234
+spring.datasource.password=12345
 ```
 
 **Nota:** Ajuste o `username` e `password` conforme sua configuração do PostgreSQL.
@@ -75,20 +54,11 @@ O script `src/main/resources/banco.sql` será executado automaticamente na prime
 
 ## 🚀 Executando o Projeto
 
-### Opção 1: Via Maven
+### Via Maven
 
 ```bash
 mvn spring-boot:run
 ```
-
-### Opção 2: Via IDE
-
-1. Importe o projeto como projeto Maven
-2. Execute a classe `SistemaMatriculasApplication.java`
-3. O servidor iniciará na porta `8080`
-
-### Acessando o Sistema
-
 Após iniciar o servidor, acesse:
 
 ```
@@ -115,7 +85,7 @@ sistema-matriculas/
 │   │   └── resources/
 │   │       ├── templates/                # Templates Thymeleaf
 │   │       ├── application.properties    # Configurações
-│   │       └── banco.sql                # Script SQL inicial
+│   │       └── banco.sql                 # Script SQL inicial
 │   └── test/
 ├── pom.xml
 └── README.md
@@ -132,13 +102,7 @@ sistema-matriculas/
 - ✅ Ver detalhes do aluno
 - ✅ Exibir histórico de matrículas do aluno
 
-**Campos:**
-- id
-- nome
-- idade
-- endereco
-- email
-- telefone
+<img width="1917" height="259" alt="image" src="https://github.com/user-attachments/assets/6dce9d0c-b908-42cc-80ec-7285aa0fbed7" />
 
 ### 2. CRUD de Cursos
 
@@ -149,12 +113,7 @@ sistema-matriculas/
 - ✅ Excluir curso
 - ✅ Visualizar lista de alunos matriculados no curso
 
-**Campos:**
-- id
-- nome
-- descricao
-- cargaHoraria
-- categoria (Tecnologia, Administração, Saúde, Linguagens, Gestão, Outros)
+<img width="1914" height="250" alt="image" src="https://github.com/user-attachments/assets/424d155a-881c-4f65-b600-37767bffefa9" />
 
 ### 3. Matrículas
 
@@ -165,49 +124,137 @@ sistema-matriculas/
 - ✅ Ver histórico do aluno
 - ✅ Ver relatório por curso
 
-**Campos:**
-- id
-- id_aluno
-- id_curso
-- data_matricula
-- status (ATIVA / CANCELADA)
+<img width="1909" height="263" alt="image" src="https://github.com/user-attachments/assets/850eb235-e68c-492a-b828-ab1579c20bdf" />
 
 ### 4. Relatórios
 
 - ✅ **Relatório de Alunos por Curso:** Lista todos os alunos matriculados em cada curso
 - ✅ **Relatório de Cursos Mais Procurados:** Ranking dos cursos com mais matrículas ativas
-- ✅ **Relatório de Matrículas por Período:** Análise de matrículas em um período específico com filtro por data
+
+  <img width="1918" height="936" alt="image" src="https://github.com/user-attachments/assets/19711da1-fa81-4afe-8aa1-12c2bd14586c" />
+
+## 🏛️ Arquitetura do Sistema
+O sistema utiliza uma arquitetura multicamadas baseada no padrão** MVC (Model–View–Controller)**, garantindo organização, escalabilidade e fácil manutenção.
+
+### **🔹 Camada de Apresentação (View)**
+- Desenvolvida em HTML + Thymeleaf
+- Responsável por exibir dados ao usuário
+- Faz a comunicação com o Controller
+ ```html
+<p><strong>Nome:</strong> <span th:text="${aluno.nome}"></span></p>
+```
+### **🔹 Camada de Controle (Controller)**
+- Recebe requisições
+- Valida dados
+- Chama serviços
+ ```java
+  @GetMapping("/alunos/{id}")
+public String detalhes(@PathVariable Long id, Model model) {
+    model.addAttribute("aluno", alunoService.buscarPorId(id));
+    return "alunos-detalhes";
+}
+ ```
+
+### 🔹 Camada de Serviço (Service)
+- Contém regras de negócio
+- Orquestra operações entre controller e repository
+ ```java
+  public AlunoDTO buscarPorId(Long id) {
+    Aluno aluno = alunoRepositorio.findById(id).orElseThrow();
+    return mapper.map(aluno, AlunoDTO.class);
+}
+```
+### 🔹 Camada de Persistência (Repository)
+- Usa Spring Data JPA para comunicação com o banco
+ ```java
+
+  @Entity
+public class Matricula {
+    @ManyToOne private Aluno aluno;
+    @ManyToOne private Curso curso;
+    private String status;
+}
+```
+<img width="1316" height="456" alt="image" src="https://github.com/user-attachments/assets/fb39fe63-0a80-411f-90a9-46197c2b747e" />
+
+
+## 🔗 API REST
+A aplicação expõe endpoints para CRUD de alunos, cursos e matrículas.
+
+<img width="1381" height="335" alt="image" src="https://github.com/user-attachments/assets/438c9365-31c8-4115-9857-0dd3f24efd66" />
+
+### Exemplo de requisição – Criar Aluno
+ ```json
+
+{
+    "nome": "Ana Costa",
+    "idade": 21,
+    "email": "ana@email.com",
+    "telefone": "11999990000"
+}
+```
+### Exemplo de resposta
+ ```json
+
+{
+    "id": 1,
+    "nome": "Ana Costa",
+    "idade": 21,
+    "email": "ana@email.com"
+}
+```
+
+## 🧠 Programação Orientada a Objetos (POO)
+O backend foi desenvolvido seguindo os pilares da POO para garantir organização, baixo acoplamento e alta coesão, tornando o sistema mais modular, fácil de manter e ampliar.
+
+### 1. Abstração
+A abstração consiste em representar entidades do mundo real por meio de modelos lógicos chamados classes, expondo apenas informações essenciais e ocultando detalhes internos.
+ ```JAVA
+public interface CursoRepositorio extends JpaRepository<Curso, Long> {}
+```
+
+### 2. Encapsulamento
+Encapsulamento protege os dados das entidades, permitindo acesso e mudanças apenas por métodos controlados (getters e setters).
+ ```JAVA
+public class Aluno {
+    private String nome;
+    public String getNome() { return nome; }
+    public void setNome(String nome) { this.nome = nome; }
+}
+```
+
+### 3. Herança
+A herança foi utilizada para generalizar e especializar comportamentos comuns
+```JAVA
+public class Pessoa {
+    private String nome;
+}
+public class Aluno extends Pessoa {
+    private Integer idade;
+}
+```
+
+### 4. Abstração
+A abstração consiste em representar entidades do mundo real por meio de modelos lógicos chamados classes, expondo apenas informações essenciais e ocultando detalhes internos.
+```java
+public interface MatriculaServico {
+    void cancelar(Long id);
+}
+public class MatriculaServicoImpl implements MatriculaServico {
+    @Override
+    public void cancelar(Long id) { /* ... */ }
+}
+```
+
 
 ## 🗄️ Banco de Dados
 
 ### Tabelas
 
-#### `alunos`
-- `id` (SERIAL PRIMARY KEY)
-- `nome` (VARCHAR(255) NOT NULL)
-- `idade` (INTEGER NOT NULL)
-- `endereco` (VARCHAR(500))
-- `email` (VARCHAR(255) NOT NULL UNIQUE)
-- `telefone` (VARCHAR(20))
-- `data_cadastro` (TIMESTAMP)
+<img width="1339" height="379" alt="image" src="https://github.com/user-attachments/assets/aa3c4424-5831-4162-888b-be3fe3aa802e" />
 
-#### `cursos`
-- `id` (SERIAL PRIMARY KEY)
-- `nome` (VARCHAR(255) NOT NULL)
-- `descricao` (TEXT)
-- `carga_horaria` (INTEGER NOT NULL)
-- `categoria` (VARCHAR(100) NOT NULL)
-- `data_cadastro` (TIMESTAMP)
 
-#### `matriculas`
-- `id` (SERIAL PRIMARY KEY)
-- `id_aluno` (INTEGER NOT NULL, FOREIGN KEY)
-- `id_curso` (INTEGER NOT NULL, FOREIGN KEY)
-- `data_matricula` (TIMESTAMP)
-- `status` (VARCHAR(20) NOT NULL, CHECK: 'ATIVA' ou 'CANCELADA')
-- `data_cancelamento` (TIMESTAMP)
-
-### Índices
+### 1. Índices
 
 - `idx_alunos_nome` - Busca rápida por nome
 - `idx_alunos_email` - Busca rápida por email
@@ -218,7 +265,7 @@ sistema-matriculas/
 - `idx_matriculas_status` - Filtro por status
 - `idx_matriculas_data` - Filtro por data
 
-### View
+### 2. View
 
 **`vw_matriculas_detalhes`**
 
@@ -243,7 +290,7 @@ JOIN alunos a ON m.id_aluno = a.id
 JOIN cursos c ON m.id_curso = c.id;
 ```
 
-### Trigger
+### 3. Trigger
 
 **`trg_definir_dados_matricula`**
 
@@ -256,7 +303,7 @@ FOR EACH ROW
 EXECUTE FUNCTION definir_dados_matricula();
 ```
 
-### Procedure
+### 4. Procedure
 
 **`realizar_matricula(p_id_aluno INT, p_id_curso INT)`**
 
@@ -299,51 +346,26 @@ O sistema possui validações em:
 - **Cursos:** Nome obrigatório (3-255 caracteres), carga horária > 0, categoria obrigatória
 - **Matrículas:** Aluno e curso obrigatórios, não permite matrícula duplicada ativa
 
-## 📊 Relatórios
+## 🛠️ Tecnologias
 
-### Como Rodar Relatórios
-
-1. Acesse o menu **Relatórios** no topo da página
-2. Selecione o relatório desejado:
-   - **Alunos por Curso:** Mostra todos os alunos agrupados por curso
-   - **Cursos Mais Procurados:** Ranking dos cursos ordenados por número de matrículas
-   - **Matrículas por Período:** Permite filtrar por data de início e fim
-
-### Filtros
-
-O relatório de **Matrículas por Período** permite:
-- Selecionar data de início
-- Selecionar data de fim
-- Visualizar todas as matrículas realizadas no período
-
-## 🐛 Solução de Problemas
-
-### Erro de Conexão com Banco de Dados
-
-1. Verifique se o PostgreSQL está rodando
-2. Confirme as credenciais em `application.properties`
-3. Certifique-se de que o banco `sistema_matriculas` existe
-
-### Erro ao Executar Script SQL
-
-O script SQL é executado automaticamente. Se houver erro:
-1. Verifique os logs do Spring Boot
-2. Execute o script manualmente no PostgreSQL
-3. Verifique se há objetos duplicados (DROP antes de CREATE)
-
-## 📄 Licença
-
-Este projeto foi desenvolvido para fins educacionais.
-
-## 👨‍💻 Desenvolvido com
-
-- Java 17
-- Spring Boot 3.2.0
-- PostgreSQL 17
-- Bootstrap 5.3.0
-- Thymeleaf
+- **Java 17.0.12**
+- **Spring Boot 3.2.0**
+- **Spring Web**
+- **Spring Data JPA**
+- **PostgreSQL Driver (PostgreSQL 17)**
+- **Thymeleaf**
+- **Bootstrap 5.3.0**
+- **Jakarta Validation (Bean Validation)**
+- **Lombok**
+- **ModelMapper**
 
 ---
 
-**Sistema de Matrículas** - Gerenciamento completo de matrículas escolares
+
+## 🛠️ Desenvolvido por:
+**Equipe:** Maria Victória Freire, Dannyelen Christinna Dourado, Arlington Costa Tavares Junior, Marcus Vinícius Costa Pachêco, Jefferson Freitas, Emmanoel Ferreira Oliveira.
+
+*Este repositória visa contemplar o projeto de Trabalho Discente Efetivo (TDE) da disciplina de Programação Backend.*
+
+
 
