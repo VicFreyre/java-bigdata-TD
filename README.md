@@ -361,12 +361,12 @@ O sistema possui validações em:
 
 ---
 
-### 📄 [Documentação técnica](https://docs.google.com/document/d/1NVCaWefwCvgjClYzVp_iYclOM8QJSYfQCViVfPg_04Y/edit?usp=sharing)
-### 📺
-### 📽️
 
 ## 🛠️ Desenvolvido por:
 **Equipe:** Maria Victória Freire, Dannyelen Christinna Dourado, Arlington Costa Tavares Junior, Marcus Vinícius Costa Pachêco, Jefferson Freitas, Emmanoel Ferreira Oliveira.
+### 📄 [Documentação Técnica](https://docs.google.com/document/d/1NVCaWefwCvgjClYzVp_iYclOM8QJSYfQCViVfPg_04Y/edit?usp=sharing)
+### 🎨 [Apresentação no Canva](https://www.canva.com/design/DAG5k-DyvfE/pbVqZkB6PADgaYFeuzn8aw/edit?utm_content=DAG5k-DyvfE&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton)
+### 📺 [Vídeo Demonstrativo](https://drive.google.com/file/d/1bfbBcatD9gXGL9CCU3YaCTCFBIk5AUia/view?usp=sharing)
 
 *Este repositória visa contemplar o projeto de Trabalho Discente Efetivo (TDE) da disciplina de Programação Backend.*
 
