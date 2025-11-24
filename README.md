@@ -361,6 +361,9 @@ O sistema possui validações em:
 
 ---
 
+### 📄 [Documentação técnica](https://docs.google.com/document/d/1NVCaWefwCvgjClYzVp_iYclOM8QJSYfQCViVfPg_04Y/edit?usp=sharing)
+### 📺
+### 📽️
 
 ## 🛠️ Desenvolvido por:
 **Equipe:** Maria Victória Freire, Dannyelen Christinna Dourado, Arlington Costa Tavares Junior, Marcus Vinícius Costa Pachêco, Jefferson Freitas, Emmanoel Ferreira Oliveira.
